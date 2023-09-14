@@ -25,7 +25,7 @@ Test()
     $CMAKE --build $BUILD_DIR/$TEST_DIR
 }
 
-Analyse()
+Analyze()
 {
     mkdir -p $BUILD_DIR/$BIN_DIR
     $CMAKE -S . -B $BUILD_DIR/$BIN_DIR --warn-uninitialized -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DBUILD_PROJECT=ON -DSTATIC_CODE_ANALYSIS=ON
@@ -37,7 +37,7 @@ Analyse()
 Coverage()
 {
     mkdir -p $BUILD_DIR/$TEST_DIR
-    $CMAKE -S . -B $BUILD_DIR/$TEST_DIR --warn-uninitialized -DUNIT_TESTS=ON 
+    $CMAKE -S . -B $BUILD_DIR/$TEST_DIR --warn-uninitialized -DCODE_COVERAGE=ON 
     $CMAKE --build $BUILD_DIR/$TEST_DIR
     lcov --rc lcov_branch_coverage=1 --directory . --capture --output-file $BUILD_DIR/$TEST_DIR/coverage.info
     lcov --rc lcov_branch_coverage=1 --remove $BUILD_DIR/$TEST_DIR/coverage.info '/opt/*' --output-file $BUILD_DIR/$TEST_DIR/coverage.info
@@ -62,14 +62,21 @@ Coverage()
     if [[ $total_percentage -lt $threshold ]];
     then
         echo " "
-        echo -e "\e[31mTotal coverage should be ${threshold}%: FAILED \e[0m"
-        echo -e "\e[31mCurrent total coverage should be ${total_percentage}% \e[0m"
+        echo -e "\e[31mFAILED: Total coverage should be ${threshold}.0% or higher. Currently, it is ${total_percentage}.0%. \e[0m"
         exit 1
     else
         echo " "
-        echo -e "\e[32mTotal coverage is: ${total_percentage}%: PASSED \e[0m"
+        echo -e "\e[32mPASSED: Total coverage is: ${total_percentage}.0% \e[0m"
         exit 0
     fi
+}
+
+LineCount()
+{
+    echo
+    echo "Total project line count."
+    cloc .
+    echo 
 }
 
 Help()
@@ -81,14 +88,15 @@ Help()
     echo "Usage: ./Project.sh [-b|t|a|c|h]"
     echo "options:"
     echo "      b    Build the project"
-    echo "      t    Run the unit test"
+    echo "      t    Execute unit test"
     echo "      a    Run static code analysis"
     echo "      c    Generate a code coverage report"
+    echo "      l    Provides the total line count of the project"
     echo "      h    Displays this help message"
     echo
 }
 
-while getopts ":btach" option;
+while getopts ":btaclh" option;
 do
     case $option in
         b) 
@@ -98,10 +106,13 @@ do
             Test
             exit;;
         a) 
-            Analyse
+            Analyze
             exit;;
         c) 
             Coverage 
+            exit;;
+        l) 
+            LineCount
             exit;;
         h)
             Help

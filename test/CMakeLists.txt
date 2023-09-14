@@ -31,7 +31,6 @@ if(DEFINED ENV{CPPUTEST_HOME})
     )
 
     target_link_libraries(tests 
-        #lcov
         gcov
         CppUTest
         CppUTestExt
@@ -43,5 +42,5 @@ if(DEFINED ENV{CPPUTEST_HOME})
         COMMAND ./tests -c -v
     )
 else()
-    message(STATUS "Requires CppuTest to be installed")
+    message(STATUS "Requires the unit testing framework, CppuTest.")
 endif()

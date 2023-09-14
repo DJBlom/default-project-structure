@@ -15,6 +15,8 @@ if(${FILES_IN_DIR} GREATER 0)
     target_include_directories(features PRIVATE
         ${PROJECT_SOURCE_DIR}/include/
     )
+else ()
+    message(STATUS "There are no files in, source/features/include or source/features/source.")
 endif()
 
 

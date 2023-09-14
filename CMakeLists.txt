@@ -4,9 +4,10 @@
 cmake_minimum_required(VERSION 3.25)
 project(Project_Name VERSION 0.0.1 LANGUAGES CXX C ASM)
 
-option(BUILD_PROJECT "Build The Project" OFF)
-option(UNIT_TESTS "Perform Unit Tests" OFF)
-option(STATIC_CODE_ANALYSIS "Perform Static Code Analysis" OFF)
+option(BUILD_PROJECT "Build the project" OFF)
+option(UNIT_TESTS "Perform unit tests" OFF)
+option(STATIC_CODE_ANALYSIS "Perform static code analysis" OFF)
+option(CODE_COVERAGE "Perform code coverage" OFF)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 20)
@@ -71,7 +72,6 @@ if(BUILD_PROJECT)
 endif()
 
 
-
 if (UNIT_TESTS)
     if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/test)
         add_subdirectory(${CMAKE_SOURCE_DIR}/test)
@@ -99,13 +99,18 @@ if (STATIC_CODE_ANALYSIS)
             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
             COMMENT "Running static code analysis..." 
         )
+    else ()
+        message(STATUS "Requires the static code analysis tool, CppCheck.")
     endif()
 endif()
 
 
-
 if (CODE_COVERAGE)
-
+    if(IS_DIRECTORY ${CMAKE_SOURCE_DIR}/test)
+        add_subdirectory(${CMAKE_SOURCE_DIR}/test)
+    else()
+        message(STATUS "Directory test, does not exist")
+    endif()
 endif()
 
 
