@@ -1,5 +1,13 @@
 ############################################################################
-#
+# Contents: Unit Test CMakeLists.txt file
+# Author: Dawid Blom
+# Date: September 15, 2023
+# 
+# NOTE: 
+# This file is the unit test CMakeLists.txt file containing the compiler
+# options and definitions, the link options and libraries, the path to the
+# main test runner file MainTest.cpp and all the test, mock files, 
+# and project source files.
 ############################################################################
 cmake_minimum_required(VERSION 3.25)
 project(target-tests VERSION 0.0.1 LANGUAGES CXX C)
@@ -17,11 +25,11 @@ if(DEFINED ENV{CPPUTEST_HOME})
         $<$<CONFIG:DEBUG>:-Og>
     )
 
-    include_directories(tests PRIVATE
+    include_directories(tests INTERFACE
         $ENV{CPPUTEST_HOME}/include
     )
 
-    link_directories(tests 
+    link_directories(tests INTERFACE
         $ENV{CPPUTEST_HOME}/lib
     )
 

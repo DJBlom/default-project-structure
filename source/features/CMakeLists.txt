@@ -1,5 +1,11 @@
 ############################################################################
-#
+# Contents: Feature CMakeLists.txt file
+# Author: Dawid Blom
+# Date: September 15, 2023
+# 
+# NOTE: 
+# This file is the CMakeLists.txt for the feature sub branch file, containing
+# the source and header files of the feautre sub branch. 
 ############################################################################
 cmake_minimum_required(VERSION 3.25)
 project(target-features VERSION 0.0.1 LANGUAGES CXX C)

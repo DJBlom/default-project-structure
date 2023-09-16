@@ -1,5 +1,13 @@
 ############################################################################
-#
+# Contents: Top Most CMakeLists.txt file
+# Author: Dawid Blom
+# Date: September 15, 2023
+# 
+# NOTE: 
+# This file is the main CMakeLists.txt file containing the compiler
+# options and definitions, the linker options, path to Main.cpp, and
+# the including of all the sub directories where other CMakeLists.txt
+# files are found.
 ############################################################################
 cmake_minimum_required(VERSION 3.25)
 project(Project_Name VERSION 0.0.1 LANGUAGES CXX C ASM)

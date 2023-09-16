@@ -1,6 +1,15 @@
-################################################################################
-#
-################################################################################
+############################################################################
+# Contents: Top Most CMakeLists.txt file
+# Author: Dawid Blom
+# Date: September 15, 2023
+# 
+# NOTE: 
+# This file is a utility file used to build and test the project base on
+# arguments passed to it (run ./scrips/Project.sh -h, for a list of 
+# arguments). It provides the capability to run your unit tests, static
+# code analysis, code coverage, get a line project's line count, and build
+# your project.
+############################################################################
 #!/bin/bash
 
 CMAKE=cmake
