@@ -105,7 +105,12 @@ InstallRequirements()
     then
         cd /opt/
         git clone https://github.com/cpputest/cpputest.git
-        echo "export CPPUTEST_HOME=/opt/cpputest"
+        cd /opt/cpputest
+        sudo autoreconf --install
+        sudo ./configure
+        sudo make tdd
+        echo "export CPPUTEST_HOME=/opt/cpputest" >> /home/$(whoami)/.bashrc
+        source /home/$(whoami)/.bashrc
     else
         echo "CppUTest is installed"
     fi
