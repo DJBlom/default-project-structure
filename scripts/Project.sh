@@ -109,8 +109,6 @@ InstallRequirements()
     else
         echo "CppUTest is installed"
     fi
-
-
 }
 
 Help()
