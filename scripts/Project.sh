@@ -88,48 +88,84 @@ LineCount()
     echo 
 }
 
+InstallRequirements()
+{
+    DNF=$(which dnf)
+    specific_packages=(cloc lcov cppcheck)
+
+    if [[ $DNF ]];
+    then
+        sudo dnf -y install $specific_packages 
+        sudo dnf -y group install "C Development Tools and Libraries"
+    else
+        echo "Your distribution is not unknown"
+    fi
+
+    if [[ -z "${CPPUTEST_HOME}" ]];
+    then
+        cd /opt/
+        git clone https://github.com/cpputest/cpputest.git
+        echo "export CPPUTEST_HOME=/opt/cpputest"
+    else
+        echo "CppUTest is installed"
+    fi
+
+
+}
+
 Help()
 {
     echo
     echo "Description:"
     echo "This script is used to build, test, analyze, and provide code coverage on a project."
     echo
-    echo "Usage: ./Project.sh [-b|t|a|c|h]"
+    echo "Usage: ./Project.sh [-b|t|a|c|i|h]"
     echo "options:"
-    echo "      b    Build the project"
-    echo "      t    Execute unit test"
-    echo "      a    Run static code analysis"
-    echo "      c    Generate a code coverage report"
-    echo "      l    Provides the total line count of the project"
-    echo "      h    Displays this help message"
+    echo "     -b    Build the project"
+    echo "     -t    Execute unit test"
+    echo "     -a    Run static code analysis"
+    echo "     -c    Generate a code coverage report"
+    echo "     -l    Provides the total line count of the project"
+    echo "     -i    Installs all requirements for this script to work"
+    echo "     -h    Displays this help message"
     echo
 }
 
-while getopts ":btaclh" option;
-do
-    case $option in
-        b) 
-            Build
-            exit;;
-        t) 
-            Test
-            exit;;
-        a) 
-            Analyze
-            exit;;
-        c) 
-            Coverage 
-            exit;;
-        l) 
-            LineCount
-            exit;;
-        h)
-            Help
-            exit;;
-        \?)
-            echo "Usage: run [./Project.sh -h] for help"
-    esac
-done
+
+
+if [[ -z $1 ]];
+then
+    echo "Usage: run [./Project.sh -h] for help"
+else
+    while getopts ":btaclih" option;
+    do
+        case $option in
+            b) 
+                Build
+                exit;;
+            t) 
+                Test
+                exit;;
+            a) 
+                Analyze
+                exit;;
+            c) 
+                Coverage 
+                exit;;
+            l) 
+                LineCount
+                exit;;
+            i)
+                InstallRequirements
+                exit;;
+            h)
+                Help
+                exit;;
+            \?)
+                echo "Usage: run [./Project.sh -h] for help"
+        esac
+    done
+fi
 
 
 
