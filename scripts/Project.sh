@@ -157,13 +157,13 @@ Help()
     echo
     echo "Usage: ./Project.sh [-d|b|t|a|c|i|h]"
     echo "options:"
-    echo "      -d    Build the project for deployment"
+    echo "      -d    Build for the deployment of the project"
     echo "      -b    Build the project"
     echo "      -t    Execute unit test"
     echo "      -a    Run static code analysis"
     echo "      -c    Generate a code coverage report"
     echo "      -l    Provides the total line count of the project"
-    echo "      -i    Installs all required packages for the project"
+    echo "      -i    Installs all required packages for this script to work"
     echo "      -h    Displays this help message"
     echo
 }
