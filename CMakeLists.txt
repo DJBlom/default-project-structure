@@ -103,6 +103,7 @@ if (STATIC_CODE_ANALYSIS)
     if (CMAKE_CXX_CPPCHECK)
         list(APPEND CMAKE_CXX_CPPCHECK
             "--enable=all"
+            "--std=c11"
             "--std=c++20"
             "--error-exitcode=1"
             "--platform=unix64"
