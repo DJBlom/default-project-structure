@@ -12,12 +12,13 @@ TEST_TARGET := UnitTests
 CPP_PLATFORM := -std=c++20
 
 SRC_DIRS :=\
-	$(PROJECT_DIR)/source/features/src\
-	
+	$(PROJECT_DIR)/source/features/source\
+	$(PROJECT_DIR)/source/system/source\
+
 INCLUDE_DIRS :=\
 	$(CPPUTEST_HOME)/include\
 	$(PROJECT_DIR)/source/features/include\
-	$(PROJECT_DIR)/firmware/drivers/include\
+	$(PROJECT_DIR)/source/system/include\
 	$(TEST_DIR)/mocks/include\
 
 

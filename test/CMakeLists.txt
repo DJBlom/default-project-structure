@@ -26,6 +26,7 @@ if(DEFINED ENV{CPPUTEST_HOME})
     )
 
     include_directories(${PROJECT_NAME} INTERFACE
+        ${PROJECT_SOURCE_DIR}/../source/features/include
         $ENV{CPPUTEST_HOME}/include
     )
 
@@ -36,6 +37,7 @@ if(DEFINED ENV{CPPUTEST_HOME})
     add_executable(${PROJECT_NAME}
         ${PROJECT_SOURCE_DIR}/MainTest.cpp
         ${PROJECT_SOURCE_DIR}/tests/Template.cpp
+        ${PROJECT_SOURCE_DIR}/../source/features/source/FeatureTemp.cpp
     )
 
     target_link_libraries(${PROJECT_NAME}

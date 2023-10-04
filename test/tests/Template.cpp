@@ -5,7 +5,8 @@
  *
  * Note: Refer to the TEST LIST for details on what this fixture tests.
  *******************************************************************************/
-extern "C" 
+#include "FeatureTemp.h"
+extern "C"
 {
 
 }
@@ -27,7 +28,8 @@ TEST_GROUP(Template)
 
 TEST(Template, DemoTest)
 {
-    CHECK_EQUAL(1, 1);
+    CHECK_EQUAL(true, Temp(1));
+    CHECK_EQUAL(false, Temp(3));
 }
 
 

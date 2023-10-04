@@ -82,10 +82,14 @@ Coverage()
                                                              -DCMAKE_EXECUTABLE_SUFFIX=$BIN_SUFFIX \
                                                              -DCODE_COVERAGE=ON
     $CMAKE --build $BUILD_DIR/$TEST_DIR
+
     lcov --rc lcov_branch_coverage=1 --directory . --capture --output-file $BUILD_DIR/$TEST_DIR/coverage.info
-    lcov --rc lcov_branch_coverage=1 --remove $BUILD_DIR/$TEST_DIR/coverage.info '/opt/*' --output-file $BUILD_DIR/$TEST_DIR/coverage.info
-    lcov --rc lcov_branch_coverage=1 --list $BUILD_DIR/$TEST_DIR/coverage.info > $BUILD_DIR/$TEST_DIR/coverage.txt
-    genhtml --rc lcov_branch_coverage=1 --legend -o $BUILD_DIR/$TEST_DIR/html $BUILD_DIR/$TEST_DIR/coverage.info
+    lcov --rc lcov_branch_coverage=1 --remove $BUILD_DIR/$TEST_DIR/coverage.info $(pwd)/source/feature/include/* \
+        $(pwd)/source/system/include/* $(pwd)/test/tests/* $(pwd)/test/mocks/include/* $(pwd)/test/mocks/source/* \
+        --output-file $BUILD_DIR/$TEST_DIR/filtered_coverage.info
+    lcov --rc lcov_branch_coverage=1 --list $BUILD_DIR/$TEST_DIR/filtered_coverage.info > $BUILD_DIR/$TEST_DIR/coverage.txt
+
+    genhtml --rc lcov_branch_coverage=1 --legend -o $BUILD_DIR/$TEST_DIR/html $BUILD_DIR/$TEST_DIR/filtered_coverage.info
     total_coverage=$(grep -F "Total:" $BUILD_DIR/$TEST_DIR/coverage.txt | tr -d ' ')
 
     # Extract the line coverage percentage
