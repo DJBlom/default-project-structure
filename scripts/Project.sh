@@ -22,7 +22,6 @@ BUILD_TYPE="Debug"
 BUILD_DIR=build
 
 
-rm -rf $BUILD_DIR/*
 
 DeployBuild()
 {
