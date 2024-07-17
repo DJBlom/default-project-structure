@@ -18,18 +18,6 @@ void* System::Services::Input(void*)
 
 		// Business logic goes here
 
-        if (System::Services::criticalSection.Lock() == true)
-        {
-            syslog(LOG_CRIT, "Entered Critical Section For Input\n");
-        }
-
-        // Critical Section
-
-        if (System::Services::criticalSection.Unlock() == true)
-        {
-            syslog(LOG_CRIT, "Left Critical Section For Input\n");
-        }
-
 		syslog(LOG_CRIT, "Data Input on core: %d for the %d cycle\n", sched_getcpu(), num++);
 	}
 	//GCOV_EXCL_STOP

@@ -8,7 +8,6 @@
 #ifndef _SERVICES_H_
 #define _SERVICES_H_
 #include <BinarySemaphore.h>
-#include <PrioInheritMutex.h>
 #include <chrono>
 #include <thread>
 #include <syslog.h>
@@ -40,7 +39,6 @@ namespace System {
 			inline static bool abortInput{false};
 			inline static bool abortProcessData{false};
 			inline static bool abortOutput{false};
-			inline static Api::PrioInheritMutex criticalSection;
 			inline static Api::BinarySemaphore inputSem;
 			inline static Api::BinarySemaphore processDataSem;
 			inline static Api::BinarySemaphore outputSem;
