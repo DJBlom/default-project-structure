@@ -53,10 +53,11 @@ if(BUILD_PROJECT)
     )
 
     target_include_directories(${PROJECT_NAME} PRIVATE
-        ${CMAKE_SOURCE_DIR}/api/include
-        ${CMAKE_SOURCE_DIR}/features/include
-        ${CMAKE_SOURCE_DIR}/system/include
         ${CMAKE_SOURCE_DIR}/app/include
+        ${CMAKE_SOURCE_DIR}/api/include
+        ${CMAKE_SOURCE_DIR}/system/include
+        ${CMAKE_SOURCE_DIR}/features/include
+        ${CMAKE_SOURCE_DIR}/algorithms/include
     )
 
     target_link_options(${PROJECT_NAME} PRIVATE

@@ -1,5 +1,5 @@
 ############################################################################
-# Contents: Project Install File
+# Contents: Project Install Functions
 # 
 # Author: Dawid Blom
 #

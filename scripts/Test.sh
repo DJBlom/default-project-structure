@@ -1,15 +1,16 @@
 ############################################################################
-# Contents: Project Test File
+# Contents: Project Test Functions
 # 
 # Author: Dawid Blom
 #
 # Date: September 15, 2023
 #
-# NOTE:
+# NOTE: 
 #
 ############################################################################
 #!/bin/bash
 
+readonly TEST_DIR=$(pwd)/test
 readonly TEST_TYPES=("sca" "coverage" "unit" "show")
 
 function Test()
@@ -46,7 +47,6 @@ function StaticCodeAnalysis()
              --enable=information \
              --enable=missingInclude \
              --enable=unusedFunction \
-             --checkers-report=static_code_analysis.txt\
              --library=posix \
              --std=c11 \
              --std=c++20 \
@@ -57,6 +57,7 @@ function StaticCodeAnalysis()
              -I $prjDir/api/include \
              -I $prjDir/system/include \
              -I $prjDir/features/include \
+             -I $prjDir/algorithms/include \
              $prjDir/app/source \
              $prjDir/api/source \
              $prjDir/system/source \
@@ -66,9 +67,10 @@ function StaticCodeAnalysis()
 function CodeCoverage()
 {
 	local prjDir=$(pwd)
-    local coverageDir=$prjDir/$TEST_DIR/coverage
+#    local coverageDir=$TEST_DIR/coverage
+    local coverageDir=$BUILD_DIR/coverage
     mkdir -p $coverageDir
-    sudo -E make -C $prjDir/$TEST_DIR -s gcov
+    sudo -E make -C $TEST_DIR -s gcov
 	gcovr --exclude="^[^\/]+\/mocks\/?(?:[^\/]+\/?)*$" --exclude-throw-branches -r $prjDir \
 	--html-nested $coverageDir/coverage.html  --txt $coverageDir/coverage.txt
 
@@ -83,7 +85,7 @@ function CodeCoverage()
         if [ -d $coverageDir ];
         then
             rm -rf $coverageDir
-            sudo -E make -C $prjDir/$TEST_DIR -s clean
+            sudo -E make -C $TEST_DIR -s clean
         fi
         exit 1
 	else
@@ -91,7 +93,7 @@ function CodeCoverage()
         if [ -d $coverageDir ];
         then
             rm -rf $coverageDir
-            sudo -E make -C $prjDir/$TEST_DIR -s clean
+            sudo -E make -C $TEST_DIR -s clean
         fi
         exit 0
 	fi
@@ -100,18 +102,19 @@ function CodeCoverage()
 function UnitTest()
 {
 	local prjDir=$(pwd)
-    sudo -E make -C $prjDir/test -s
-    sudo -E make -C $prjDir/test -s clean
+    sudo -E make -C $TEST_DIR -s
+    sudo -E make -C $TEST_DIR -s clean
 }
 
 function ShowCodeCoverage()
 {
 	local prjDir=$(pwd)
-    local coverageDir=$prjDir/$TEST_DIR/coverage
-    mkdir $coverageDir
-    sudo -E make -C $prjDir/$TEST_DIR -s gcov
-	gcovr -e $prjDir/$TEST_DIR/mocks --exclude-throw-branches -r $prjDir \
+    local coverageDir=$BUILD_DIR/coverage
+    mkdir -p $coverageDir
+    sudo -E make -C $TEST_DIR -s gcov
+	gcovr -e $TEST_DIR/mocks --exclude-throw-branches -r $prjDir \
 	--html-nested $coverageDir/coverage.html  --txt $coverageDir/coverage.txt
 
     firefox $coverageDir/coverage.html
+    sudo -E make -C $TEST_DIR -s clean
 }

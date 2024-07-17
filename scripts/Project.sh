@@ -1,29 +1,18 @@
 ############################################################################
-# Contents: Project Build File
+# Contents: Main Function
 # 
 # Author: Dawid Blom
 #
 # Date: September 15, 2023
 #
-# NOTE:
-#
+# NOTE: Allows the user to build, test, draw statistics, and install 
+# project related packages.
 ############################################################################
 #!/bin/bash
 source $(dirname "$0")/Build.sh
 source $(dirname "$0")/Test.sh
 source $(dirname "$0")/Install.sh
 source $(dirname "$0")/Statistics.sh
-
-readonly PROJECT_NAME=NativeProjectStructure
-readonly PROJECT_VERSION_NUM=0.0.1
-readonly PROJECT_VERSION_PREFIX=-v
-readonly BIN_SUFFIX=.elf
-readonly CMAKE=cmake
-readonly BIN_DIR=$PROJECT_NAME
-readonly TEST_DIR=test
-readonly TOOLCHAIN=$(pwd)/cmake/CrossToolchain.cmake
-readonly BUILD_TYPE="Debug"
-readonly BUILD_DIR=build
 
 readonly YES=0
 readonly NO=1

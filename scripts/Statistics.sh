@@ -1,5 +1,5 @@
 ############################################################################
-# Contents: Project Statistics File
+# Contents: Project Statistics Functions
 # 
 # Author: Dawid Blom
 #
