@@ -9,6 +9,10 @@
 #
 ############################################################################
 #!/bin/bash
+source $(dirname "$0")/Build.sh
+source $(dirname "$0")/Test.sh
+source $(dirname "$0")/Install.sh
+source $(dirname "$0")/Statistics.sh
 
 readonly PROJECT_NAME=NativeProjectStructure
 readonly PROJECT_VERSION_NUM=0.0.1
@@ -30,13 +34,6 @@ readonly SUCCESS_COLOR="\e[1;32m"
 readonly END_COLOR="\e[0m"
 
 
-readonly TEST_TYPES=("sca" "coverage" "unit" "show")
-readonly STATS_TYPES=("lc")
-readonly INSTALLATION_OPTION=("setup" "cpputest")
-readonly SUPPORTED_BUILD_TYPES=("host" "target" "deploy")
-
-
-
 function Main()
 {
     EnvironmentVerification $#
@@ -48,7 +45,11 @@ function EnvironmentVerification()
     local allArguments=$1
     if [[ $(basename `pwd`) != $PROJECT_NAME ]];
     then
-        $ECHO "${ERROR_COLOR}ERROR: This script must be run from the top most directory of project, $PROJECT_NAME ${END_COLOR}"
+        $ECHO "${ERROR_COLOR}ERROR: $(basename "$0") must be called from:\n${END_COLOR}"
+        $ECHO "${ERROR_COLOR}\t$(dirname `pwd`)\n\r${END_COLOR}"
+        $ECHO "${INFO_COLOR}INFO: Currently, you are here:\n${END_COLOR}"
+        $ECHO "${INFO_COLOR}\t$(pwd)${END_COLOR}"
+        exit 1;
     fi
 
     if [[ $allArguments -eq 0 ]];
@@ -151,250 +152,6 @@ function ParseCommandLineArguments()
     done
 }
 
-function Build()
-{
-    local buildtype=$1
-    RemoveDirectory $BUILD_DIR
-    if [[ $buildtype == ${SUPPORTED_BUILD_TYPES[0]} ]];
-    then
-        $ECHO "${INFO_COLOR}Building for the host platform${END_COLOR}"
-        HostBuild
-        exit
-    elif [[ $buildtype == ${SUPPORTED_BUILD_TYPES[1]} ]];
-    then
-        if CrossCompilerProvided;
-        then
-            $ECHO "${INFO_COLOR}Building for the deployment${END_COLOR}"
-            TargetBuild
-        else
-            $ECHO "${ERROR_COLOR}ERROR: Cannot build for 'TARGET', enrivonrment variable 'CROSS_COMPILER' is not set${END_COLOR}"
-        fi
-    elif [[ $buildtype == ${SUPPORTED_BUILD_TYPES[2]} ]];
-    then
-        if CrossCompilerProvided;
-        then
-            $ECHO "${INFO_COLOR}Building for the target platform${END_COLOR}"
-            DeployBuild
-        else
-            $ECHO "${ERROR_COLOR}ERROR: Cannot build for 'deployment', enrivonrment variable 'CROSS_COMPILER' is not set${END_COLOR}"
-        fi
-    else
-        $ECHO "${ERROR_COLOR}ERROR: Build type not supported${END_COLOR}"
-    fi
-}
-
-function Test()
-{
-    local testtype=$1
-    if [[ $testtype == ${TEST_TYPES[0]} ]];
-    then
-        $ECHO "${INFO_COLOR}INFO: Running 'Cppcheck' to perform static code analysis${END_COLOR}"
-        StaticCodeAnalysis
-    elif [[ $testtype == ${TEST_TYPES[1]} ]];
-    then
-        $ECHO "${INFO_COLOR}INFO: Running 'gcovr' to perform code coverage${END_COLOR}"
-        CodeCoverage
-    elif [[ $testtype == ${TEST_TYPES[2]} ]];
-    then
-        $ECHO "${INFO_COLOR}INFO: Running 'CppUTest' to perform unit-testing${END_COLOR}"
-        UnitTest
-    elif [[ $testtype == ${TEST_TYPES[3]} ]];
-    then
-        $ECHO "${INFO_COLOR}INFO: Launching 'firefox' to display code coverage${END_COLOR}"
-        ShowCodeCoverage
-    else
-        $ECHO "${ERROR_COLOR}ERROR: Test type not supported${END_COLOR}"
-    fi
-}
-
-function Statistics()
-{
-    local statstype=$1
-    if [[ $statstype == ${STATS_TYPES[0]} ]];
-    then
-        $ECHO "${INFO_COLOR}INFO: Running 'Cloc' to see the projects line count${END_COLOR}"
-        LineCount
-    else
-        $ECHO "${ERROR_COLOR}ERROR: Currently, I do not support that kind of statistics${END_COLOR}"
-    fi
-}
-
-function Install()
-{
-    local install=$1
-    if [[ $install == ${INSTALLATION_OPTION[0]} ]];
-    then
-        $ECHO "${INFO_COLOR}INFO: Installing required project packages${END_COLOR}"
-        $ECHO "${SUCCESS_COLOR}"
-        InstallPackages
-        $ECHO "${END_COLOR}"
-    elif [[ $install == ${INSTALLATION_OPTION[1]} ]];
-    then
-        $ECHO "${INFO_COLOR}INFO: Installing 'CppUTest'${END_COLOR}"
-        $ECHO "${SUCCESS_COLOR}"
-        InstallCppUTest
-        $ECHO "${END_COLOR}"
-    else
-        $ECHO "${ERROR_COLOR}ERROR: Currently, I do not support that kind of statistics${END_COLOR}"
-    fi
-}
-
-function HostBuild()
-{
-    mkdir -p $BUILD_DIR/$BIN_DIR
-    $CMAKE -S . -B $BUILD_DIR/$BIN_DIR --warn-uninitialized -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-                                                            -DCMAKE_PROJECT_NAME=$PROJECT_NAME \
-                                                            -DCMAKE_EXECUTABLE_SUFFIX=$BIN_SUFFIX \
-                                                            -DBUILD_PROJECT=ON
-    $CMAKE --build $BUILD_DIR/$BIN_DIR
-}
-
-function TargetBuild()
-{
-    mkdir -p $BUILD_DIR/$BIN_DIR
-    $CMAKE -S . -B $BUILD_DIR/$BIN_DIR --warn-uninitialized -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-                                                            -DCMAKE_PROJECT_NAME=$PROJECT_NAME \
-                                                            -DCMAKE_EXECUTABLE_SUFFIX=$BIN_SUFFIX \
-                                                            -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN \
-                                                            -DBUILD_PROJECT=ON
-    $CMAKE --build $BUILD_DIR/$BIN_DIR
-}
-
-function DeployBuild()
-{
-    $CMAKE -S . -B $BUILD_DIR/$BIN_DIR --warn-uninitialized -DCMAKE_BUILD_TYPE=$BUILD_TYPE \
-                                                            -DCMAKE_PROJECT_NAME=$PROJECT_NAME \
-                                                            -DCMAKE_PROJECT_VERSION=$PROJECT_VERSION_PREFIX$PROJECT_VERSION_NUM \
-                                                            -DCMAKE_EXECUTABLE_SUFFIX=$BIN_SUFFIX \
-                                                            -DCMAKE_TOOLCHAIN_FILE=$TOOLCHAIN \
-                                                            -DBUILD_PROJECT_FOR_DEPLOY=ON \
-                                                            -DBUILD_PROJECT=ON
-    $CMAKE --build $BUILD_DIR/$BIN_DIR
-
-    DEPLOY_DIR=$BUILD_DIR/$PROJECT_NAME$PROJECT_VERSION_PREFIX$PROJECT_VERSION_NUM
-    mkdir -p $DEPLOY_DIR
-    cp -r $BUILD_DIR/$BIN_DIR/$PROJECT_NAME$PROJECT_VERSION_PREFIX$PROJECT_VERSION_NUM$BIN_SUFFIX $DEPLOY_DIR
-    tar cvf $DEPLOY_DIR.tar.gz $DEPLOY_DIR
-}
-
-function StaticCodeAnalysis()
-{
-    local prjDir=$(pwd)
-    cppcheck --enable=style \
-             --enable=warning \
-             --enable=performance \
-             --enable=portability \
-             --enable=information \
-             --enable=missingInclude \
-             --enable=unusedFunction \
-             --checkers-report=static_code_analysis.txt\
-             --library=posix \
-             --std=c11 \
-             --std=c++20 \
-             --error-exitcode=1 \
-             --platform=unix64 \
-             --suppress=missingIncludeSystem \
-             --suppress=checkersReport \
-             -I $prjDir/api/include \
-             -I $prjDir/system/include \
-             -I $prjDir/features/include \
-             $prjDir/app/source \
-             $prjDir/api/source \
-             $prjDir/system/source \
-             $prjDir/features/source 
-}
-
-function CodeCoverage()
-{
-	local prjDir=$(pwd)
-    local coverageDir=$prjDir/$TEST_DIR/coverage
-    mkdir -p $coverageDir
-    sudo -E make -C $prjDir/$TEST_DIR -s gcov
-	gcovr --exclude="^[^\/]+\/mocks\/?(?:[^\/]+\/?)*$" --exclude-throw-branches -r $prjDir \
-	--html-nested $coverageDir/coverage.html  --txt $coverageDir/coverage.txt
-
-	coverage=$(grep -F "TOTAL" $coverageDir/coverage.txt)
-	# Extract the line coverage percentage
-	total_coverage=($(echo "$coverage" | awk -F ' ' '{print $4}' | awk -F '%' '{print $1}'))
-	threshold=80
-	if [[ $total_coverage -lt $threshold ]];
-	then
-        $ECHO "${ERROR_COLOR}FAILED: Total coverage should be ${threshold}.0% or higher.${END_COLOR}"
-        $ECHO "${INFO_COLOR}INFO: Currently, it is ${total_coverage}.0%${END_COLOR}"
-        if [ -d $coverageDir ];
-        then
-            rm -rf $coverageDir
-            sudo -E make -C $prjDir/$TEST_DIR -s clean
-        fi
-        exit 1
-	else
-        $ECHO "${SUCCESS_COLOR}PASS: Total coverage is: ${total_coverage}.0%${END_COLOR}"
-        if [ -d $coverageDir ];
-        then
-            rm -rf $coverageDir
-            sudo -E make -C $prjDir/$TEST_DIR -s clean
-        fi
-        exit 0
-	fi
-}
-
-function UnitTest()
-{
-	local prjDir=$(pwd)
-    sudo -E make -C $prjDir/test -s
-    sudo -E make -C $prjDir/test -s clean
-}
-
-function ShowCodeCoverage()
-{
-	local prjDir=$(pwd)
-    local coverageDir=$prjDir/$TEST_DIR/coverage
-    mkdir $coverageDir
-    sudo -E make -C $prjDir/$TEST_DIR -s gcov
-	gcovr -e $prjDir/$TEST_DIR/mocks --exclude-throw-branches -r $prjDir \
-	--html-nested $coverageDir/coverage.html  --txt $coverageDir/coverage.txt
-
-    firefox $coverageDir/coverage.html
-}
-
-function InstallPackages()
-{
-    packages=(cloc lcov gcovr make cmake opencv-devel cppcheck dh-autoreconf automake autoconf)
-    DNF=$(which dnf)
-
-    if [[ ! -z $DNF ]];
-    then
-        sudo dnf -y install ${packages[@]}
-    else
-        $ECHO "${ERROR_COLOR}ERROR: This system does not use the dnf based package manage${END_COLOR}"
-    fi
-}
-
-function InstallCppUTest()
-{
-    InstallPackages
-    if [[ -z "$CPPUTEST_HOME" ]];
-    then
-        cd /opt
-        sudo git clone https://github.com/cpputest/cpputest.git
-        cd cpputest
-        sudo autoreconf --install
-        sudo ./configure
-        sudo make tdd
-        echo "export CPPUTEST_HOME=/opt/cpputest/" >> /home/$(whoami)/.bashrc
-        source /home/$(whoami)/.bashrc
-    else
-        $ECHO "${INFO_COLOR}INFO: CppUTest is already installed @ $CPPUTEST_HOME${END_COLOR}"
-    fi
-}
-
-function LineCount()
-{
-    $ECHO "${INFO_COLOR}INFO: Total project line count"
-    cloc .
-    $ECHO "${END_COLOR}"
-}
-
 function Help()
 {
     $ECHO "${INFO_COLOR}\n\rUsage: ./scripts/Project.sh [OPTION]${END_COLOR}"
@@ -411,6 +168,7 @@ function Help()
     $ECHO "${INFO_COLOR}\t\t\t[SCA], performs static code analysis using Cppcheck${END_COLOR}"
     $ECHO "${INFO_COLOR}\t\t\t[COVERAGE], performs code coverage with gcovr${END_COLOR}"
     $ECHO "${INFO_COLOR}\t\t\t[UNIT], runs all unit tests in your project using CppUTest\n\r${END_COLOE}"
+    $ECHO "${INFO_COLOR}\t\t\t[SHOW], graphically displays the code coverage in firefox\r${END_COLOE}"
     $ECHO "${INFO_COLOR}\t-s, -s=, --stats, --stats=SUPPORTED_STATISTICS${END_COLOR}"
     $ECHO "${INFO_COLOR}\t\tSUPPORTED_STATISTICS:${END_COLOR}"
     $ECHO "${INFO_COLOR}\t\t\t[LC], takes a source code line and file count\n\r${END_COLOR}"
