@@ -12,7 +12,7 @@ namespace Interface {
 		public:
 			virtual ~Mutex() = default;
 			[[nodiscard]] virtual bool Lock() = 0;
-			[[nodiscard]] virtual bool Unlock() = 0;
+			virtual bool Unlock() = 0;
 	};
 }
 #endif

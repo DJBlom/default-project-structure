@@ -21,7 +21,7 @@ namespace Api {
 			virtual ~PrioInheritMutex() override;
 
 			[[nodiscard]] virtual bool Lock() noexcept override;
-			[[nodiscard]] virtual bool Unlock() noexcept override;
+			virtual bool Unlock() noexcept override;
 
 		private:
 			pthread_mutex_t mutex;

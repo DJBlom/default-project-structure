@@ -13,6 +13,7 @@
 #ifndef _RING_BUFFER_H_
 #define _RING_BUFFER_H_
 #include <cstdint>
+#include <PrioInheritMutex.h>
 namespace Algorithm {
     template<class type, std::size_t size>
 	class RingBuffer {
@@ -24,27 +25,36 @@ namespace Algorithm {
             RingBuffer& operator= (RingBuffer&& rb) = default;
             virtual ~RingBuffer() = default;
 
-            virtual void Insert(const type& data) noexcept
+            [[nodiscard]] virtual bool Insert(const type& data) noexcept
             {
-                this->buffer[this->tail] = data;
-                if (BufferIsFull())
+                bool success{false};
+                if (this->mutex.Lock() == true)
                 {
-                    ManageHeadIndex();
+                    this->buffer[this->tail] = data;
+                    if (BufferIsFull())
+                    {
+                        ManageHeadIndex();
+                    }
+                    ManageTailIndex();
+                    success = true;
+                    this->mutex.Unlock();
                 }
-                ManageTailIndex();
+
+                return success;
             }
 
             [[nodiscard]] virtual bool Retrieve(type& data) noexcept
             {
-                bool success{true};
-                data = this->buffer[this->prevhead];
-                if (BufferIsEmpty())
+                bool success{false};
+                if (this->mutex.Lock() == true)
                 {
-                    success = false;
-                }
-                else
-                {
-                    ManageHeadIndex();
+                    data = this->buffer[this->prevhead];
+                    if (BufferIsEmpty() == false)
+                    {
+                        ManageHeadIndex();
+                    }
+                    success = true;
+                    this->mutex.Unlock();
                 }
 
                 return success;
@@ -91,6 +101,7 @@ namespace Algorithm {
             int prevtail{1};
             std::uint16_t max{size};
             type buffer[size]{};
+            Api::PrioInheritMutex mutex;
             enum Index : std::uint16_t {
                 next = 1
             };

@@ -49,7 +49,7 @@ TEST_GROUP(RingBufferTest)
 
 TEST(RingBufferTest, InsertAnElement)
 {
-    input.Insert(data);
+    CHECK_EQUAL(true, input.Insert(data));
     CHECK_EQUAL(false, input.Empty());
 }
 
@@ -57,9 +57,11 @@ TEST(RingBufferTest, RemoveAnElement)
 {
     expected = 5;
     data = 5;
-    input.Insert(data);
-    if (input.Retrieve(result))
+    if (input.Insert(data))
     {
+        if (input.Retrieve(result))
+        {
+        }
     }
 
     CHECK_EQUAL(expected, result);
@@ -70,7 +72,9 @@ TEST(RingBufferTest, ManageContinuousBufferOverflows)
     expected = 29;
     for (int i = 0; i <= 33; i++)
     {
-        input.Insert(i);
+        if (input.Insert(i))
+        {
+        }
     }
 
     CHECK_EQUAL(true, input.Retrieve(result));
@@ -82,7 +86,9 @@ TEST(RingBufferTest, ManageContinuousBufferUnderflows)
     expected = 13;
     for (int i = 0; i < 14; i++)
     {
-        input.Insert(i);
+        if (input.Insert(i))
+        {
+        }
     }
 
     for (int i = 0; i < 20; i++)
@@ -100,7 +106,9 @@ TEST(RingBufferTest, RandomSanityCheck1)
     expected = 27;
     for (int i = 0; i < 28; i++)
     {
-        input.Insert(i);
+        if (input.Insert(i))
+        {
+        }
     }
 
     for (int i = 0; i < 20; i++)
@@ -118,7 +126,9 @@ TEST(RingBufferTest, RandomSanityCheck2)
     expected = 17;
     for (int i = 0; i < 22; i++)
     {
-        input.Insert(i);
+        if (input.Insert(i))
+        {
+        }
     }
 
     CHECK_EQUAL(true, input.Retrieve(result));
@@ -130,7 +140,10 @@ TEST(RingBufferTest, EnsureObjectToBeCopyable)
     expected = 1;
     for (int i = 0; i < 5; i++)
     {
-        input.Insert(i+1);
+        if (input.Insert(i+1))
+        {
+
+        }
     }
 
     Algorithm::RingBuffer<int, bufferSize> rb;
@@ -151,7 +164,9 @@ TEST(RingBufferTest, EnsureObjectToBeMoveable)
 {
     for (int i = 0; i < 5; i++)
     {
-        input.Insert(i);
+        if (input.Insert(i))
+        {
+        }
     }
     Algorithm::RingBuffer<int, bufferSize> rb = std::move(input);
 }

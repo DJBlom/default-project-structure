@@ -39,7 +39,7 @@ Api::PrioInheritMutex::~PrioInheritMutex()
 }
 
 
-[[nodiscard]] bool Api::PrioInheritMutex::Unlock() noexcept
+bool Api::PrioInheritMutex::Unlock() noexcept
 {
 	bool isUnlocked{false};
 	isUnlocked = !static_cast<bool> (pthread_mutex_unlock(&this->mutex));
