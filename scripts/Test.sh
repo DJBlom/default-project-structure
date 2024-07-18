@@ -51,9 +51,10 @@ function StaticCodeAnalysis()
              --std=c11 \
              --std=c++20 \
              --error-exitcode=1 \
-             --platform=unix64 \
+             --platform=unix32 unix64 win32A win32W win64 \
              --suppress=missingIncludeSystem \
              --suppress=checkersReport \
+             -I $prjDir/app/include \
              -I $prjDir/api/include \
              -I $prjDir/system/include \
              -I $prjDir/features/include \
