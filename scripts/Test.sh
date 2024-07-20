@@ -68,10 +68,9 @@ function StaticCodeAnalysis()
 function CodeCoverage()
 {
 	local prjDir=$(pwd)
-#    local coverageDir=$TEST_DIR/coverage
     local coverageDir=$BUILD_DIR/coverage
     mkdir -p $coverageDir
-    sudo -E make -C $TEST_DIR -s gcov
+    make -C $TEST_DIR -s gcov
 	gcovr --exclude="^[^\/]+\/mocks\/?(?:[^\/]+\/?)*$" --exclude-throw-branches -r $prjDir \
 	--html-nested $coverageDir/coverage.html  --txt $coverageDir/coverage.txt
 
@@ -86,7 +85,7 @@ function CodeCoverage()
         if [ -d $coverageDir ];
         then
             rm -rf $coverageDir
-            sudo -E make -C $TEST_DIR -s clean
+            make -C $TEST_DIR -s clean
         fi
         exit 1
 	else
@@ -94,7 +93,7 @@ function CodeCoverage()
         if [ -d $coverageDir ];
         then
             rm -rf $coverageDir
-            sudo -E make -C $TEST_DIR -s clean
+            make -C $TEST_DIR -s clean
         fi
         exit 0
 	fi
@@ -103,17 +102,17 @@ function CodeCoverage()
 function UnitTest()
 {
 	local prjDir=$(pwd)
-    sudo -E make -C $TEST_DIR -s
-    sudo -E make -C $TEST_DIR -s clean
+    make -C $TEST_DIR -s
+    make -C $TEST_DIR -s clean
 }
 
 function ShowCodeCoverage()
 {
 	local prjDir=$(pwd)
     local coverageDir=$BUILD_DIR/coverage
-    mkdir -p $coverageDir
+    sudo mkdir -p $coverageDir
     sudo -E make -C $TEST_DIR -s gcov
-	gcovr -e $TEST_DIR/mocks --exclude-throw-branches -r $prjDir \
+	sudo gcovr -e $TEST_DIR/mocks --exclude-throw-branches -r $prjDir \
 	--html-nested $coverageDir/coverage.html  --txt $coverageDir/coverage.txt
 
     firefox $coverageDir/coverage.html

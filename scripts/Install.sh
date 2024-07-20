@@ -41,7 +41,7 @@ function InstallPackages()
 
     if [[ ! -z $DNF ]];
     then
-        sudo dnf -y install ${packages[@]}
+        dnf -y install ${packages[@]}
     else
         $ECHO "${ERROR_COLOR}ERROR: This system does not use the dnf based package manage${END_COLOR}"
     fi
@@ -53,11 +53,11 @@ function InstallCppUTest()
     if [[ -z "$CPPUTEST_HOME" ]];
     then
         cd /opt
-        sudo git clone https://github.com/cpputest/cpputest.git
+        git clone https://github.com/cpputest/cpputest.git
         cd cpputest
-        sudo autoreconf --install
-        sudo ./configure
-        sudo make tdd
+        autoreconf --install
+        ./configure
+        make tdd
         echo "export CPPUTEST_HOME=/opt/cpputest/" >> /home/$(whoami)/.bashrc
         source /home/$(whoami)/.bashrc
     else

@@ -46,7 +46,7 @@ function Build()
             $ECHO "${INFO_COLOR}Building for the target platform${END_COLOR}"
             DeployBuild
         else
-            $ECHO "${ERROR_COLOR}ERROR: Cannot build for 'deployment', enrivonrment variable 'CROSS_COMPILER' is not set${END_COLOR}"
+            $ECHO "${ERROR_COLOR}ERROR: Cannot build for 'DEPLOY', enrivonrment variable 'CROSS_COMPILER' is not set${END_COLOR}"
         fi
     else
         $ECHO "${ERROR_COLOR}ERROR: Build type not supported${END_COLOR}"
