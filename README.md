@@ -1,4 +1,4 @@
-# POSIX Based Default Project Structure
+# Default POSIX-Based Project Structure
 
 # Instructions
 - The whole project can be build, tested, analyzed, or health checked from the root
