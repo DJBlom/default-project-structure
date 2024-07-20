@@ -7,10 +7,10 @@
  ******************************************************************************/
 #ifndef _SERVICES_H_
 #define _SERVICES_H_
-#include <BinarySemaphore.h>
 #include <chrono>
 #include <thread>
 #include <syslog.h>
+#include <BinarySemaphore.h>
 namespace System {
 	using namespace std::literals::chrono_literals;
 	class Services {

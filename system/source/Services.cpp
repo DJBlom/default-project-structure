@@ -6,7 +6,9 @@
  * Note:
  ******************************************************************************/
 #include <Services.h>
+#include <Helloworld.h>
 
+static Feature::Helloworld hw;
 
 void* System::Services::Input(void*)
 {
@@ -16,6 +18,8 @@ void* System::Services::Input(void*)
 		if (System::Services::inputSem.Acquire() == false)
 			break;
 
+        if (!hw.Input())
+            syslog(LOG_CRIT, "Failed to perform 'Helloworld Input'");
 		// Business logic goes here
 
 		syslog(LOG_CRIT, "Data Input on core: %d for the %d cycle\n", sched_getcpu(), num++);
@@ -34,6 +38,8 @@ void* System::Services::ProcessData(void*)
 		if (System::Services::processDataSem.Acquire() == false)
 			break;
 
+        if (!hw.Process())
+            syslog(LOG_CRIT, "Failed to perform 'Helloworld Process'");
 		// Business logic goes here
 
 		syslog(LOG_CRIT, "Data Process on core: %d for the %d cycle\n", sched_getcpu(), num++);
@@ -52,6 +58,8 @@ void* System::Services::Output(void*)
 		if (System::Services::outputSem.Acquire() == false)
 			break;
 
+        if (!hw.Output())
+            syslog(LOG_CRIT, "Failed to perform 'Helloworld Output'");
 		// Business logic goes here
 
 		syslog(LOG_CRIT, "Data Output on core: %d for the %d cycle\n", sched_getcpu(), num++);

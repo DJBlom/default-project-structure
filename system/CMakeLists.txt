@@ -26,6 +26,8 @@ if(${FILES_IN_DIR} GREATER 0)
         PRIVATE
         ${PROJECT_SOURCE_DIR}/include/
         ${CMAKE_SOURCE_DIR}/api/include/
+        ${CMAKE_SOURCE_DIR}/features/include/
+        ${CMAKE_SOURCE_DIR}/algorithms/include
         PUBLIC
         ${CMAKE_SOURCE_DIR}/app/include
     )
