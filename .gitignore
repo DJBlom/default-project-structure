@@ -1,6 +1,14 @@
 
 
 
-build/
 
+# Build folder
+build
 
+# Created test folders
+test/obj
+test/coverage
+test/gcov
+
+# Vim .swp files
+*.swp

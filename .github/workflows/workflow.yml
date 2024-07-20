@@ -1,0 +1,106 @@
+name: default-project-structure
+on:
+  pull_request:
+    branches:
+    - main
+    - develop
+    - feature/*
+    - hotfix/*
+    - refactor/*
+
+  push:
+    branches:
+    - main
+    - develop
+    - feature/*
+    - hotfix/*
+    - refactor/*
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    container:
+      image: dawidblom/default-project-structure:latest
+      credentials:
+        username: ${{ vars.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      options: --privileged
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Build
+      run: sudo -E scripts/Project.sh --build=host
+
+  Statistics:
+    runs-on: ubuntu-latest
+    container:
+      image: dawidblom/default-project-structure:latest
+      credentials:
+        username: ${{ vars.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      options: --privileged
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Statistics
+      run: sudo -E scripts/Project.sh --stats=lc
+
+  Tests-SCA:
+    runs-on: ubuntu-latest
+    container:
+      image: dawidblom/default-project-structure:latest
+      credentials:
+        username: ${{ vars.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      options: --privileged
+
+    needs: Build
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Static Code Analysis
+      run: sudo -E scripts/Project.sh --test=sca
+
+  Tests-Unit:
+    runs-on: ubuntu-latest
+    container:
+      image: dawidblom/default-project-structure:latest
+      credentials:
+        username: ${{ vars.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      options: --privileged
+
+    needs: Build
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Unit Tests
+      run: sudo -E scripts/Project.sh --test=unit
+      env:
+        CPPUTEST_HOME: ${{ vars.CPPUTEST_HOME  }}
+
+  Tests-Coverage:
+    runs-on: ubuntu-latest
+    container:
+      image: dawidblom/default-project-structure:latest
+      credentials:
+        username: ${{ vars.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+      options: --privileged
+
+    needs: Build
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Code Coverage
+      run: sudo -E scripts/Project.sh --test=coverage
