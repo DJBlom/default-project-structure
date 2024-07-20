@@ -24,32 +24,35 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: dawidblom/default-project-structure:latest
+      access-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       options: --privileged
 
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Project Build
+    - name: Build
       run: sudo -E scripts/Project.sh --build=host
 
   Statistics:
     runs-on: ubuntu-latest
     container:
       image: dawidblom/default-project-structure:latest
+      access-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       options: --privileged
 
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Project Statistics
+    - name: Statistics
       run: sudo -E scripts/Project.sh --stats=lc
 
   Tests-SCA:
     runs-on: ubuntu-latest
     container:
       image: dawidblom/default-project-structure:latest
+      access-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       options: --privileged
 
     needs: Build
@@ -57,13 +60,14 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Project Analysis
+    - name: Static Code Analysis
       run: sudo -E scripts/Project.sh --test=sca
 
   Tests-Unit:
     runs-on: ubuntu-latest
     container:
       image: dawidblom/default-project-structure:latest
+      access-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       options: --privileged
 
     needs: Build
@@ -71,7 +75,7 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Project Unit Tests
+    - name: Unit Tests
       run: sudo -E scripts/Project.sh --test=unit
       env:
         CPPUTEST_HOME: ${{ vars.CPPUTEST_HOME  }}
@@ -80,6 +84,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: dawidblom/default-project-structure:latest
+      access-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       options: --privileged
 
     needs: Build
@@ -87,5 +92,5 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Project Coverage
+    - name: Code Coverage
       run: sudo -E scripts/Project.sh --test=coverage
