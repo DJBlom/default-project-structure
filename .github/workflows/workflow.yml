@@ -26,7 +26,7 @@ jobs:
       image: dawidblom/default-project-structure:latest
       credentials:
         username: ${{ vars.DOCKER_USERNAME }}
-        access-token: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       options: --privileged
 
     steps:
@@ -42,7 +42,7 @@ jobs:
       image: dawidblom/default-project-structure:latest
       credentials:
         username: ${{ vars.DOCKER_USERNAME }}
-        access-token: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       options: --privileged
 
     steps:
@@ -58,7 +58,7 @@ jobs:
       image: dawidblom/default-project-structure:latest
       credentials:
         username: ${{ vars.DOCKER_USERNAME }}
-        access-token: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       options: --privileged
 
     needs: Build
@@ -75,7 +75,7 @@ jobs:
       image: dawidblom/default-project-structure:latest
       credentials:
         username: ${{ vars.DOCKER_USERNAME }}
-        access-token: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       options: --privileged
 
     needs: Build
@@ -94,7 +94,7 @@ jobs:
       image: dawidblom/default-project-structure:latest
       credentials:
         username: ${{ vars.DOCKER_USERNAME }}
-        access-token: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+        password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       options: --privileged
 
     needs: Build
