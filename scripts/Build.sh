@@ -11,7 +11,6 @@
 #!/bin/bash
 
 
-readonly PROJECT_NAME=NativeProjectStructure
 readonly PROJECT_VERSION_NUM=0.0.1
 readonly PROJECT_VERSION_PREFIX=-v
 readonly BIN_SUFFIX=.elf
@@ -19,6 +18,7 @@ readonly CMAKE=cmake
 readonly BUILD_TYPE="Debug"
 readonly TOOLCHAIN=$(pwd)/cmake/CrossToolchain.cmake
 readonly BUILD_DIR=build
+readonly PROJECT_NAME=$(basename `pwd`)
 readonly BIN_DIR=$BUILD_DIR/$PROJECT_NAME
 readonly SUPPORTED_BUILD_TYPES=("host" "target" "deploy")
 
