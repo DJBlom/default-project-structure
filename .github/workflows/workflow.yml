@@ -28,7 +28,7 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Project Build
       run: sudo -E scripts/Project.sh --build=host
@@ -41,7 +41,7 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Project Statistics
       run: sudo -E scripts/Project.sh --stats=lc
@@ -55,7 +55,7 @@ jobs:
     needs: Build
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Project Analysis
       run: sudo -E scripts/Project.sh --test=sca
@@ -69,7 +69,7 @@ jobs:
     needs: Build
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Project Unit Tests
       run: sudo -E scripts/Project.sh --test=unit
@@ -85,7 +85,7 @@ jobs:
     needs: Build
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Project Coverage
       run: sudo -E scripts/Project.sh --test=coverage
