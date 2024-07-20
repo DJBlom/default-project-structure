@@ -1,0 +1,103 @@
+#name: Workflow
+#on:
+#  pull_request:
+#    branches:
+#    - develop
+#    - feature/*
+#    - hotfix/*
+#    - refactor/*
+#
+#  push:
+#    branches:
+#    - develop
+#    - feature/*
+#    - hotfix/*
+#    - refactor/*
+#
+#env:
+#  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN  }}
+#
+#jobs:
+#  Build:
+#    runs-on: ubuntu-latest
+#    container:
+#      image: dawidblom/observer:latest
+#      options: --privileged
+#
+#    steps:
+#    - name: Checkout Code
+#      uses: actions/checkout@v3
+#
+#    - name: Project Build
+#      run: scripts/Project.sh --build=host
+#
+#  Statistics:
+#    runs-on: ubuntu-latest
+#    container:
+#      image: dawidblom/observer:latest
+#      options: --privileged
+#
+#    steps:
+#    - name: Checkout Code
+#      uses: actions/checkout@v3
+#
+#    - name: Project Statistics
+#      run: scripts/Project.sh --stats=lc
+#
+#  Analysis:
+#    runs-on: ubuntu-latest
+#    container:
+#      image: dawidblom/observer:latest
+#      options: --privileged
+#
+#    needs: Build
+#    steps:
+#    - name: Checkout Code
+#      uses: actions/checkout@v3
+#
+#    - name: Project Analysis
+#      run: scripts/Project.sh -t sca
+#
+#  Tests:
+#    runs-on: ubuntu-latest
+#    container:
+#      image: dawidblom/observer:latest
+#      options: --privileged
+#
+#    needs: Build
+#    steps:
+#    - name: Checkout Code
+#      uses: actions/checkout@v3
+#
+#    - name: Project Unit Tests
+#      run: scripts/Project.sh --test=unit
+#      env:
+#        CPPUTEST_HOME: ${{ vars.CPPUTEST_HOME  }}
+#
+#  Coverage:
+#    runs-on: ubuntu-latest
+#    container:
+#      image: dawidblom/observer:latest
+#      options: --privileged
+#
+#    needs: Build
+#    steps:
+#    - name: Checkout Code
+#      uses: actions/checkout@v3
+#
+#    - name: Project Coverage
+#      run: scripts/Project.sh --test=coverage
+#
+#  Deploy:
+#    runs-on: ubuntu-latest
+#    container: dawidblom/observer:latest
+#    needs: [Build, Analysis, Tests, Coverage]
+#    steps:
+#      - name: Checkout Code
+#        uses: actions/checkout@v3
+#
+#      - name: Artifact Deployment
+#        if: ${{ github.event.pull_request.base.ref == 'release' && github.event.action == 'opened' }}
+#        run: |
+#          echo "Deploying Artifact"
+#          ./scripts/Project.sh --build=deploy
